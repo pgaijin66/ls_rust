@@ -1,0 +1,57 @@
+version: '3'
+
+tasks:
+  check-binary:
+    desc: "Check the built Rust executable"
+    cmds:
+      - "file target/x86_64-unknown-linux-musl/release/ls_rust"
+
+  run-locally:
+    desc: "Run the Rust executable locally"
+    cmds:
+      - "./target/x86_64-unknown-linux-musl/release/ls_rust"
+
+  build-docker-image:
+    desc: "Build Docker image for the Rust application"
+    cmds:
+      - "docker build -t ls_rust_image ."
+
+  run-docker:
+    desc: "Run the Rust application in Docker"
+    cmds:
+      - "docker run --rm ls_rust_image"
+
+  test-docker:
+    desc: "Test the Rust application in Docker with various paths"
+    cmds:
+      - "docker run --rm ls_rust_image /"
+      - "docker run --rm ls_rust_image /etc"
+
+  compare-sizes:
+    desc: "Show size comparison of the native and Rust-based ls binaries"
+    cmds:
+      - "ls -lh /bin/ls"
+      - "ls -lh target/x86_64-unknown-linux-musl/release/ls_rust"
+
+  compare-times:
+    desc: "Compare execution time of the native and Rust-based ls binaries"
+    cmds:
+      - "time ls -lh /bin/ls"
+      - "time ls -lh target/x86_64-unknown-linux-musl/release/ls_rust"
+
+  run-with-volume:
+    desc: "Run the Rust application in Docker with a mounted volume"
+    cmds:
+      - "docker run --rm -v $(pwd):/mnt ls_rust_image /mnt"
+
+  full-workflow:
+    desc: "Run the entire workflow from building the image to testing"
+    cmds:
+      - "task:check-binary"
+      - "task:run-locally"
+      - "task:build-docker-image"
+      - "task:run-docker"
+      - "task:test-docker"
+      - "task:compare-sizes"
+      - "task:compare-times"
+      - "task:run-with-volume"
