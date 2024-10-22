@@ -31,6 +31,3 @@ task full-workflow           # Run the full workflow
 run `task help` to view all options
 
 See the [Taskfile](https://taskfile.dev) documentation for more details.# ls_rust
-
-# ls_rust
-# ls_rust
